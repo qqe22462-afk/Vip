@@ -190,26 +190,26 @@ DragThreshold       = 5,
 ToggleDebounce      = 0.25,
 }
 local Theme = {
-Background   = Color3.fromRGB(10, 16, 32),
-Surface      = Color3.fromRGB(18, 28, 50),
-SurfaceAlt   = Color3.fromRGB(24, 36, 60),
-SurfaceHover = Color3.fromRGB(30, 44, 74),
-Accent       = Color3.fromRGB(0, 132, 255),
-AccentSoft   = Color3.fromRGB(0, 90, 190),
-AccentLight  = Color3.fromRGB(90, 180, 255),
-Text         = Color3.fromRGB(232, 240, 255),
-TextMuted    = Color3.fromRGB(140, 160, 200),
-Border       = Color3.fromRGB(38, 60, 105),
-Success      = Color3.fromRGB(0, 180, 120),
-Danger       = Color3.fromRGB(220, 60, 80),
-Warning      = Color3.fromRGB(240, 180, 60),
-SwitchOff    = Color3.fromRGB(40, 52, 76),
+Background   = Color3.fromRGB(8, 8, 10),
+Surface      = Color3.fromRGB(18, 18, 22),
+SurfaceAlt   = Color3.fromRGB(26, 26, 32),
+SurfaceHover = Color3.fromRGB(38, 30, 34),
+Accent       = Color3.fromRGB(220, 40, 55),
+AccentSoft   = Color3.fromRGB(140, 25, 35),
+AccentLight  = Color3.fromRGB(255, 110, 120),
+Text         = Color3.fromRGB(255, 240, 240),
+TextMuted    = Color3.fromRGB(200, 150, 155),
+Border       = Color3.fromRGB(180, 40, 50),
+Success      = Color3.fromRGB(220, 40, 55),
+Danger       = Color3.fromRGB(255, 60, 70),
+Warning      = Color3.fromRGB(255, 130, 130),
+SwitchOff    = Color3.fromRGB(50, 30, 34),
 Shadow       = Color3.fromRGB(0, 0, 0),
 White        = Color3.fromRGB(255, 255, 255),
 IconGradStart = Color3.fromRGB(255, 255, 255),
-IconGradEnd   = Color3.fromRGB(0, 195, 255),
+IconGradEnd   = Color3.fromRGB(230, 40, 55),
 IconGradAngle = -45,
-IconDim       = Color3.fromRGB(120, 135, 165),
+IconDim       = Color3.fromRGB(160, 90, 95),
 }
 local ENUM_FONT_MAP = {
 Regular   = Enum.Font.SourceSans,
@@ -443,6 +443,13 @@ end
 for k, v in pairs(Theme) do PreviousTheme[k] = v end
 end
 local function applySettingsVisuals()
+
+-- [RED-THEME-FIXER] บังคับธีมแดง-ดำทุกครั้งที่ applySettingsVisuals ถูกเรียก
+Theme.Accent      = Color3.fromRGB(220, 40, 55)
+Theme.AccentSoft  = Color3.fromRGB(140, 25, 35)
+Theme.AccentLight = Color3.fromRGB(255, 110, 120)
+Theme.Background  = Color3.fromRGB(8, 8, 10)
+Theme.Border      = Color3.fromRGB(180, 40, 50)
 applyThemeBindings()
 applyTextScaleAndFont(screenGui)
 if TogglePill and TogglePill.Parent then
@@ -478,9 +485,11 @@ Theme = {},
 MainPosition = posData(mainFrame),
 PillPosition = posData(TogglePill),
 }
+--[[ [RED-THEME-FIXER] ปิดการบันทึกสี (ธีมถูกล็อก)
 for k, v in pairs(Theme) do
 if typeof(v) == "Color3" then data.Theme[k] = colorToArray(v) end
 end
+]]
 return data
 end
 local function applyPosition(gui, data)
@@ -498,6 +507,7 @@ UserTextScale = math.clamp(tonumber(data.TextScale) or DefaultConfig.TextScale, 
 local fw = tostring(data.FontWeight or DefaultConfig.FontWeight)
 if not FONT_WEIGHTS[fw] then fw = DefaultConfig.FontWeight end
 UserFontWeight = fw
+--[[ [RED-THEME-FIXER] ปิดการโหลดสีจากไฟล์ เพื่อไม่ให้ทับธีมแดง-ดำ
 if type(data.Theme) == "table" then
 for key, fallback in pairs(DefaultTheme) do
 if typeof(fallback) == "Color3" then
@@ -505,6 +515,7 @@ local v = data.Theme[key]
 if type(v) == "table" then
 Theme[key] = safeColor3(v[1], v[2], v[3], fallback)
 end
+]]
 end
 end
 end
