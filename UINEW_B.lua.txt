@@ -83,7 +83,7 @@ end
 if not IS_MOBILE and (PLATFORM_NAME == "Android" or PLATFORM_NAME == "IOS") then
 IS_MOBILE = true
 end
-local LOGO_ASSET_ID = 74536582053430
+local LOGO_ASSET_ID = 106878473664566
 local LOGO_URL      = "rbxassetid://" .. LOGO_ASSET_ID
 local function applyLogo(imageObject)
 if not imageObject then return end
