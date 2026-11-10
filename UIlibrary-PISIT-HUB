@@ -190,26 +190,26 @@ DragThreshold       = 5,
 ToggleDebounce      = 0.25,
 }
 local Theme = {
-Background   = Color3.fromRGB(8, 8, 10),
-Surface      = Color3.fromRGB(18, 18, 22),
-SurfaceAlt   = Color3.fromRGB(26, 26, 32),
-SurfaceHover = Color3.fromRGB(38, 30, 34),
-Accent       = Color3.fromRGB(220, 40, 55),
-AccentSoft   = Color3.fromRGB(140, 25, 35),
+Background   = Color3.fromRGB(16, 10, 14),
+Surface      = Color3.fromRGB(28, 16, 22),
+SurfaceAlt   = Color3.fromRGB(38, 22, 30),
+SurfaceHover = Color3.fromRGB(50, 28, 38),
+Accent       = Color3.fromRGB(220, 45, 60),
+AccentSoft   = Color3.fromRGB(160, 30, 45),
 AccentLight  = Color3.fromRGB(255, 110, 120),
-Text         = Color3.fromRGB(255, 240, 240),
-TextMuted    = Color3.fromRGB(200, 150, 155),
-Border       = Color3.fromRGB(180, 40, 50),
-Success      = Color3.fromRGB(220, 40, 55),
-Danger       = Color3.fromRGB(255, 60, 70),
-Warning      = Color3.fromRGB(255, 130, 130),
-SwitchOff    = Color3.fromRGB(50, 30, 34),
+Text         = Color3.fromRGB(255, 240, 245),
+TextMuted    = Color3.fromRGB(200, 150, 165),
+Border       = Color3.fromRGB(90, 35, 50),
+Success      = Color3.fromRGB(0, 180, 120),
+Danger       = Color3.fromRGB(255, 60, 80),
+Warning      = Color3.fromRGB(240, 180, 60),
+SwitchOff    = Color3.fromRGB(55, 30, 40),
 Shadow       = Color3.fromRGB(0, 0, 0),
 White        = Color3.fromRGB(255, 255, 255),
 IconGradStart = Color3.fromRGB(255, 255, 255),
-IconGradEnd   = Color3.fromRGB(230, 40, 55),
+IconGradEnd   = Color3.fromRGB(255, 80, 100),
 IconGradAngle = -45,
-IconDim       = Color3.fromRGB(160, 90, 95),
+IconDim       = Color3.fromRGB(180, 120, 135),
 }
 local ENUM_FONT_MAP = {
 Regular   = Enum.Font.SourceSans,
@@ -443,13 +443,6 @@ end
 for k, v in pairs(Theme) do PreviousTheme[k] = v end
 end
 local function applySettingsVisuals()
-
--- [RED-THEME-FIXER] บังคับธีมแดง-ดำทุกครั้งที่ applySettingsVisuals ถูกเรียก
-Theme.Accent      = Color3.fromRGB(220, 40, 55)
-Theme.AccentSoft  = Color3.fromRGB(140, 25, 35)
-Theme.AccentLight = Color3.fromRGB(255, 110, 120)
-Theme.Background  = Color3.fromRGB(8, 8, 10)
-Theme.Border      = Color3.fromRGB(180, 40, 50)
 applyThemeBindings()
 applyTextScaleAndFont(screenGui)
 if TogglePill and TogglePill.Parent then
@@ -485,11 +478,9 @@ Theme = {},
 MainPosition = posData(mainFrame),
 PillPosition = posData(TogglePill),
 }
---[[ [RED-THEME-FIXER] ปิดการบันทึกสี (ธีมถูกล็อก)
 for k, v in pairs(Theme) do
 if typeof(v) == "Color3" then data.Theme[k] = colorToArray(v) end
 end
-]]
 return data
 end
 local function applyPosition(gui, data)
@@ -507,7 +498,6 @@ UserTextScale = math.clamp(tonumber(data.TextScale) or DefaultConfig.TextScale, 
 local fw = tostring(data.FontWeight or DefaultConfig.FontWeight)
 if not FONT_WEIGHTS[fw] then fw = DefaultConfig.FontWeight end
 UserFontWeight = fw
---[[ [RED-THEME-FIXER] ปิดการโหลดสีจากไฟล์ เพื่อไม่ให้ทับธีมแดง-ดำ
 if type(data.Theme) == "table" then
 for key, fallback in pairs(DefaultTheme) do
 if typeof(fallback) == "Color3" then
@@ -515,7 +505,6 @@ local v = data.Theme[key]
 if type(v) == "table" then
 Theme[key] = safeColor3(v[1], v[2], v[3], fallback)
 end
-]]
 end
 end
 end
@@ -2461,24 +2450,15 @@ if t.Page then t.Page.Visible = (t == tab) end
 local btn, ind, lbl, iconHolder = t.Button, t.Indicator, t.Label, t.IconHolder
 if t == tab then
 btn:SetAttribute("PISIT_SELECTED", true)
-if btn:GetAttribute("PISIT_IS_SETTINGS") then
-bindThemeObject(btn, "SettingsButton")
-TweenService:Create(btn, TweenInfo.new(Config.AnimFast), { BackgroundColor3 = Theme.AccentSoft }):Play()
-else
 bindThemeObject(btn, "TabButton")
 TweenService:Create(btn, TweenInfo.new(Config.AnimFast), { BackgroundColor3 = Theme.Accent }):Play()
-end
 TweenService:Create(ind, TweenInfo.new(Config.AnimFast), { BackgroundTransparency = 0 }):Play()
 lbl.TextColor3 = Theme.White
 tintIconHolder(iconHolder, Theme.White, true)
 else
 btn:SetAttribute("PISIT_SELECTED", false)
-if btn:GetAttribute("PISIT_IS_SETTINGS") then
-bindThemeObject(btn, "SettingsButton")
-else
 bindThemeObject(btn, "TabButton")
-end
-TweenService:Create(btn, TweenInfo.new(Config.AnimFast), { BackgroundColor3 = btn:GetAttribute("PISIT_IS_SETTINGS") and Theme.Background or Theme.SurfaceAlt }):Play()
+TweenService:Create(btn, TweenInfo.new(Config.AnimFast), { BackgroundColor3 = Theme.SurfaceAlt }):Play()
 TweenService:Create(ind, TweenInfo.new(Config.AnimFast), { BackgroundTransparency = 1 }):Play()
 lbl.TextColor3 = Theme.TextMuted
 tintIconHolder(iconHolder, Theme.TextMuted, false)
@@ -2516,10 +2496,9 @@ pageLayout.Parent = page
 local btn = Instance.new("TextButton")
 btn.Name = "Tab_" .. name
 btn.Size = UDim2.new(1, 0, 0, 42)
-btn.BackgroundColor3 = opts.IsSettings and Theme.Background or Theme.SurfaceAlt
-bindThemeObject(btn, opts.IsSettings and "SettingsButton" or "TabButton")
+btn.BackgroundColor3 = Theme.SurfaceAlt
+bindThemeObject(btn, "TabButton")
 btn:SetAttribute("PISIT_SELECTED", false)
-btn:SetAttribute("PISIT_IS_SETTINGS", opts.IsSettings == true)
 btn.Text = ""
 btn.AutoButtonColor = false
 btn.LayoutOrder = opts.Order or thisIndex
@@ -2555,292 +2534,26 @@ label.Parent = btn
 local tab = {
 Name = name, Index = thisIndex, Page = page,
 Button = btn, Indicator = indicator, Label = label, IconHolder = iconHolder,
-IsSettings = opts.IsSettings == true,
 }
-if tab.IsSettings then
-local sep = Instance.new("Frame")
-sep.Name = "SettingsSeparator"
-sep.Size = UDim2.new(1, 0, 0, 8)
-sep.BackgroundTransparency = 1
-sep.LayoutOrder = 999998
-sep.Parent = sidebar
-local line = Instance.new("Frame")
-line.Size = UDim2.new(1, -10, 0, 1)
-line.Position = UDim2.new(0, 5, 0.5, 0)
-line.BackgroundColor3 = Theme.Border
-bindThemeProperty(line, "Border", "BackgroundColor3")
-line.BorderSizePixel = 0
-line.BackgroundTransparency = 0.25
-line.Parent = sep
-end
 table.insert(Tabs, tab)
 track(btn.MouseEnter:Connect(function()
 if activeTab ~= tab and not IS_MOBILE then
-local hoverColor = tab.IsSettings and Theme.SurfaceHover or Theme.SurfaceHover
-TweenService:Create(btn, TweenInfo.new(Config.AnimFast), { BackgroundColor3 = hoverColor }):Play()
+TweenService:Create(btn, TweenInfo.new(Config.AnimFast), { BackgroundColor3 = Theme.SurfaceHover }):Play()
 end
 end))
 track(btn.MouseLeave:Connect(function()
 if activeTab ~= tab and not IS_MOBILE then
-TweenService:Create(btn, TweenInfo.new(Config.AnimFast), { BackgroundColor3 = tab.IsSettings and Theme.Background or Theme.SurfaceAlt }):Play()
+TweenService:Create(btn, TweenInfo.new(Config.AnimFast), { BackgroundColor3 = Theme.SurfaceAlt }):Play()
 end
 end))
 track(btn.Activated:Connect(function()
 selectTab(tab)
 end))
-if tab.IsSettings then
-if #Tabs == 1 and not activeTab then selectTab(tab) end
-elseif (not activeTab) or (activeTab and activeTab.IsSettings and thisIndex == 2) then
+if not activeTab then
 selectTab(tab)
 end
 return tab
 end
-local SettingsTab = CreateTab({
-Name = "ตั้งค่า GUI",
-Icon = Icons.Settings,
-IsSettings = true,
-Order = 999999,
-})
-SettingsTab.IsSettings = true
-local settingsState = {
-textScaleSetter = nil,
-weightSetter = nil,
-accentInputSetter = nil,
-backgroundInputSetter = nil,
-statusLabel = nil,
-}
-local function updateSettingsStatus(text, color)
-if settingsState.statusLabel and settingsState.statusLabel.Parent then
-settingsState.statusLabel.Text = text
-settingsState.statusLabel.TextColor3 = color or Theme.TextMuted
-end
-end
-local function refreshSettingsControls()
-if settingsState.textScaleSetter then
-pcall(settingsState.textScaleSetter, tonumber(UserTextScale) or 1.0)
-end
-if settingsState.weightSetter then
-pcall(settingsState.weightSetter, UserFontWeight)
-end
-end
-local settingsGeneral = Components.CreateSection(SettingsTab.Page, {
-Title = "รูปลักษณ์หลัก",
-Order = 1,
-})
-local _, _, setTextScale = Components.CreateNumberInput(settingsGeneral, {
-Name = "ขนาดตัวอักษร",
-Min = 0.50,
-Max = 5.00,
-Step = 0.05,
-Default = tonumber(UserTextScale) or 1.0,
-Suffix = "x",
-Icon = Icons.Book,
-Callback = function(v)
-UserTextScale = tonumber(v) or 1.0
-applySettingsVisuals()
-updateSettingsStatus("ตั้งขนาดตัวอักษรเป็น " .. string.format("%.2fx", UserTextScale), Theme.Success)
-end,
-})
-settingsState.textScaleSetter = setTextScale
-local _, _, setWeight = Components.CreateDropdown(settingsGeneral, {
-Name = "ความหนาอักษร",
-Options = {"Regular", "Medium", "SemiBold", "Bold", "ExtraBold", "Heavy"},
-Default = UserFontWeight,
-Icon = Icons.Pencil,
-Callback = function(v)
-local value = tostring(v)
-if FONT_WEIGHTS[value] then
-UserFontWeight = value
-applySettingsVisuals()
-updateSettingsStatus("เปลี่ยนความหนาอักษรแล้ว • " .. value, Theme.Success)
-end
-end,
-})
-settingsState.weightSetter = setWeight
-local settingsColor = Components.CreateSection(SettingsTab.Page, {
-Title = "สีและธีม",
-Order = 2,
-})
-local ColorPresets = {
-["น้ำเงินฟ้า"] = {Accent = Color3.fromRGB(0,132,255), AccentSoft = Color3.fromRGB(0,90,190), AccentLight = Color3.fromRGB(90,180,255)},
-["ม่วงไฟฟ้า"] = {Accent = Color3.fromRGB(145,70,255), AccentSoft = Color3.fromRGB(100,45,190), AccentLight = Color3.fromRGB(190,145,255)},
-["เขียวมรกต"] = {Accent = Color3.fromRGB(0,205,140), AccentSoft = Color3.fromRGB(0,145,100), AccentLight = Color3.fromRGB(110,240,190)},
-["แดงคริมสัน"] = {Accent = Color3.fromRGB(235,55,85), AccentSoft = Color3.fromRGB(175,30,55), AccentLight = Color3.fromRGB(255,125,145)},
-["ทองคำ"] = {Accent = Color3.fromRGB(235,175,45), AccentSoft = Color3.fromRGB(165,115,20), AccentLight = Color3.fromRGB(255,215,100)},
-["ขาวดำ"] = {Accent = Color3.fromRGB(230,230,230), AccentSoft = Color3.fromRGB(150,150,150), AccentLight = Color3.fromRGB(255,255,255)},
-}
-Components.CreateDropdown(settingsColor, {
-Name = "ชุดสีหลัก",
-Options = {"น้ำเงินฟ้า", "ม่วงไฟฟ้า", "เขียวมรกต", "แดงคริมสัน", "ทอง", "ขาวดำ"},
-Default = "น้ำเงินฟ้า",
-Icon = Icons.Diamond,
-Callback = function(v)
-local preset = ColorPresets[tostring(v)]
-if preset then
-Theme.Accent = preset.Accent
-Theme.AccentSoft = preset.AccentSoft
-Theme.AccentLight = preset.AccentLight
-applySettingsVisuals()
-updateSettingsStatus("ใช้ชุดสี: " .. tostring(v), Theme.Success)
-end
-end,
-})
-local function createColorSwatches(parent, title, colors, selectedColor, onPick, order)
-local section = Components.CreateSection(parent, {Title = title, Order = order})
-local grid = Instance.new("Frame")
-grid.Name = "ColorSwatches"
-grid.BackgroundTransparency = 1
-grid.Size = UDim2.new(1, 0, 0, 82)
-grid.LayoutOrder = 1
-grid.Parent = section
-local gridLayout = Instance.new("UIGridLayout")
-gridLayout.CellSize = UDim2.fromOffset(42, 32)
-gridLayout.CellPadding = UDim2.fromOffset(10, 10)
-gridLayout.FillDirectionMaxCells = 6
-gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-gridLayout.Parent = grid
-for index, item in ipairs(colors) do
-local swatch = Instance.new("TextButton")
-swatch.Name = "Swatch_" .. tostring(index)
-swatch.LayoutOrder = index
-swatch.Size = UDim2.fromOffset(42, 32)
-swatch.BackgroundColor3 = item.Color
-swatch.BorderSizePixel = 0
-swatch.Text = ""
-swatch.AutoButtonColor = false
-swatch:SetAttribute("PISIT_SKIP_REMAP", true)
-swatch.Parent = grid
-Instance.new("UICorner", swatch).CornerRadius = UDim.new(0, 7)
-local stroke = Instance.new("UIStroke")
-stroke.Color = colorsEqual(item.Color, selectedColor) and Theme.White or Theme.Border
-stroke.Thickness = colorsEqual(item.Color, selectedColor) and 2 or 1
-stroke.Transparency = colorsEqual(item.Color, selectedColor) and 0 or 0.25
-stroke:SetAttribute("PISIT_SKIP_REMAP", true)
-stroke.Parent = swatch
-local tick = Instance.new("TextLabel")
-tick.BackgroundTransparency = 1
-tick.Size = UDim2.fromScale(1, 1)
-tick.Text = colorsEqual(item.Color, selectedColor) and "✓" or ""
-tick.TextColor3 = Theme.White
-tick.Font = Fonts.Bold
-tick.TextSize = 16
-tick.Parent = swatch
-track(swatch.Activated:Connect(function()
-selectedColor = item.Color
-for _, child in ipairs(grid:GetChildren()) do
-if child:IsA("TextButton") then
-local st = child:FindFirstChildOfClass("UIStroke")
-local label = child:FindFirstChildOfClass("TextLabel")
-local isSelected = child == swatch
-if st then st.Color = isSelected and Theme.White or Theme.Border; st.Thickness = isSelected and 2 or 1; st.Transparency = isSelected and 0 or 0.25 end
-if label then label.Text = isSelected and "✓" or "" end
-end
-end
-onPick(item.Color, item.Name)
-end))
-end
-return section
-end
-local accentColors = {
-{Name="ฟ้า", Color=Color3.fromRGB(0,132,255)},
-{Name="ม่วง", Color=Color3.fromRGB(145,70,255)},
-{Name="เขียว", Color=Color3.fromRGB(0,205,140)},
-{Name="แดง", Color=Color3.fromRGB(235,55,85)},
-{Name="ทอง", Color=Color3.fromRGB(235,175,45)},
-{Name="ชมพู", Color=Color3.fromRGB(255,85,170)},
-{Name="ฟ้าอ่อน", Color=Color3.fromRGB(70,210,255)},
-{Name="ขาว", Color=Color3.fromRGB(230,230,230)},
-{Name="ส้ม", Color=Color3.fromRGB(255,135,45)},
-{Name="เขียวอ่อน", Color=Color3.fromRGB(150,240,100)},
-{Name="แดงเข้ม", Color=Color3.fromRGB(175,35,65)},
-{Name="น้ำเงิน", Color=Color3.fromRGB(45,75,200)},
-}
-createColorSwatches(settingsColor, "เลือกสีหลัก", accentColors, Theme.Accent, function(c, name)
-Theme.Accent = c
-Theme.AccentLight = c:Lerp(Color3.fromRGB(255,255,255), 0.35)
-Theme.AccentSoft = c:Lerp(Color3.fromRGB(0,0,0), 0.35)
-applySettingsVisuals()
-updateSettingsStatus("เปลี่ยนสีหลักเป็น " .. name, Theme.Success)
-end, 3)
-local backgroundColors = {
-{Name="กรมท่า", Color=Color3.fromRGB(10,16,32)},
-{Name="ดำ", Color=Color3.fromRGB(12,12,16)},
-{Name="เทาเข้ม", Color=Color3.fromRGB(30,32,38)},
-{Name="ม่วงเข้ม", Color=Color3.fromRGB(24,15,38)},
-{Name="น้ำเงินเข้ม", Color=Color3.fromRGB(8,24,48)},
-{Name="เขียวเข้ม", Color=Color3.fromRGB(10,32,28)},
-{Name="แดงเข้ม", Color=Color3.fromRGB(38,14,22)},
-{Name="เทาน้ำเงิน", Color=Color3.fromRGB(28,38,54)},
-}
-createColorSwatches(settingsColor, "เลือกสีพื้นหลัง", backgroundColors, Theme.Background, function(c, name)
-Theme.Background = c
-applySettingsVisuals()
-updateSettingsStatus("เปลี่ยนสีพื้นหลังเป็น " .. name, Theme.Success)
-end, 4)
-local settingsStorage = Components.CreateSection(SettingsTab.Page, {
-Title = "บันทึก / คืนค่า",
-Order = 3,
-})
-settingsState.statusLabel = Components.CreateParagraph(settingsStorage, {
-Text = "สถานะ: พร้อมใช้งาน",
-Color = Theme.TextMuted,
-Size = 11,
-Order = 1,
-})
-Components.CreateButton(settingsStorage, {
-Name = "บันทึกการตั้งค่า",
-Description = "เซฟสี ขนาดตัวอักษร และความหนาอักษรลงไฟล์",
-Icon = Icons.Save,
-Color = Theme.Success,
-Order = 2,
-Callback = function()
-local ok, msg = saveSettings()
-if ok then
-updateSettingsStatus("บันทึกสำเร็จ • " .. tostring(msg), Theme.Success)
-Notify({Title = "บันทึกสำเร็จ", Message = "เก็บการตั้งค่า GUI เรียบร้อยแล้ว", Color = Theme.Success, Icon = Icons.Save})
-else
-updateSettingsStatus("บันทึกแบบถาวรไม่ได้ • " .. tostring(msg), Theme.Warning)
-Notify({Title = "บันทึกแบบไฟล์ไม่ได้", Message = tostring(msg), Color = Theme.Warning, Icon = Icons.Save})
-end
-end,
-})
-Components.CreateButton(settingsStorage, {
-Name = "โหลดการตั้งค่า",
-Description = "โหลดค่าล่าสุดจาก PISIT_HUB_SETTINGS.json",
-Icon = Icons.Cloud,
-Color = Theme.Accent,
-Order = 3,
-Callback = function()
-local ok, msg = loadSettings()
-refreshSettingsControls()
-if ok then
-updateSettingsStatus("โหลดสำเร็จ • " .. tostring(msg), Theme.Success)
-Notify({Title = "โหลดสำเร็จ", Message = "นำการตั้งค่าที่บันทึกไว้มาใช้แล้ว", Color = Theme.Success, Icon = Icons.Cloud})
-else
-updateSettingsStatus("โหลดไม่สำเร็จ • " .. tostring(msg), Theme.Danger)
-Notify({Title = "โหลดไม่สำเร็จ", Message = tostring(msg), Color = Theme.Danger, Icon = Icons.Cloud})
-end
-end,
-})
-Components.CreateButton(settingsStorage, {
-Name = "รีเซ็ตกลับค่าเดิม",
-Description = "คืนสี ขนาดตัวอักษร ความหนา และขนาดหน้าต่างเป็นค่าเริ่มต้น",
-Icon = Icons.Reset,
-Color = Theme.Warning,
-Order = 4,
-Callback = function()
-resetSettings()
-refreshSettingsControls()
-updateSettingsStatus("รีเซ็ตทั้งหมดเรียบร้อย • ขนาดกลับเป็น 600x420", Theme.Success)
-Notify({
-Title = "รีเซ็ตแล้ว",
-Message = "GUI กลับเป็นค่ามาตรฐานทั้งหมด (ขนาด, ตำแหน่ง, สี, ตัวอักษร)",
-Color = Theme.Warning,
-Icon = Icons.Action,
-Duration = 4,
-})
-end,
-})
 pillSize    = math.max(36, 54)
 pillSizeMin = math.max(32, 46)
 TogglePill = Instance.new("ImageButton")
@@ -2860,7 +2573,7 @@ TogglePill.ImageTransparency = 0.05
 TogglePill.ScaleType = Enum.ScaleType.Crop
 Instance.new("UICorner", TogglePill).CornerRadius = UDim.new(0, 12)
 pillStroke = Instance.new("UIStroke")
-pillStroke.Color = Color3.fromRGB(0, 191, 255)
+pillStroke.Color = Theme.Accent
 pillStroke.Thickness = 2.5
 pillStroke.Parent = TogglePill
 applyLogo(TogglePill)
@@ -2938,8 +2651,6 @@ end
 end
 end
 end)
-refreshSettingsControls()
-updateSettingsStatus(initialLoadOK and "โหลดการตั้งค่าเดิมอัตโนมัติแล้ว" or "สถานะ: ใช้ค่าเริ่มต้น", initialLoadOK and Theme.Success or Theme.TextMuted)
 applySettingsVisuals()
 local pillToggleWindow
 pill = {
@@ -3326,7 +3037,6 @@ IsMobile   = IS_MOBILE,
 Platform   = PLATFORM_NAME,
 ScreenGui  = screenGui,
 MainFrame  = mainFrame,
-SettingsTab = SettingsTab,
 UILock = {
 IsOwner   = function() return uiLock.isOwner end,
 GetOwner  = function() return uiLock.ownerId end,
